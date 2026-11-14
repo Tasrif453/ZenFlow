@@ -9,6 +9,7 @@ const PATTERNS = {
     relax: [['Inhale', 4], ['Hold', 7], ['Exhale', 8]],
     calm: [['Inhale', 5], ['Exhale', 5]]
 };
+const THEMES = { forest: 'Forest', ocean: 'Ocean', sunset: 'Sunset', lavender: 'Lavender' };
 const pad = (n) => String(n).padStart(2, '0');
 const cap = (s) => s[0].toUpperCase() + s.slice(1);
 const fmtTime = (s) => `${s >= 3600 ? Math.floor(s / 3600) + ':' : ''}${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
@@ -23,6 +24,7 @@ class ZenFlow {
         this.cfg = { focus: load('focus', 25), breathe: load('breathe', 4) };
         this.pattern = PATTERNS[store.get('pattern')] ? store.get('pattern') : 'box';
         this.sound = store.get('sound') !== 'off';
+        this.theme = THEMES[store.get('theme')] ? store.get('theme') : 'forest';
         this.mode = 'focus';
         this.saved = {}; // paused progress per mode, so switching modes never loses a session
         this.isRunning = false;
@@ -45,6 +47,7 @@ class ZenFlow {
         this.btnFocus = $('btn-focus');
         this.btnBreathe = $('btn-breathe');
         this.btnSound = $('btn-sound');
+        this.btnTheme = $('btn-theme');
         this.timerContainer = document.querySelector('.timer-container');
         this.tasksContainer = document.querySelector('.tasks-container');
         this.durationDisplay = $('duration-display');
@@ -101,6 +104,13 @@ class ZenFlow {
             this.chime(this.mode); // preview
             this.updateUI();
         });
+        this.applyTheme();
+        this.btnTheme.addEventListener('click', () => {
+            const keys = Object.keys(THEMES);
+            this.theme = keys[(keys.indexOf(this.theme) + 1) % keys.length];
+            store.set('theme', this.theme);
+            this.applyTheme();
+        });
         this.patternSel.value = this.pattern;
         this.patternSel.addEventListener('change', () => {
             this.pattern = this.patternSel.value;
@@ -112,10 +122,17 @@ class ZenFlow {
         this.taskInput.addEventListener('focus', () => this.tasksContainer.classList.add('task-editing'));
         this.taskInput.addEventListener('blur', () => this.tasksContainer.classList.remove('task-editing'));
         this.taskInput.value = store.get('task') || '';
-        this.taskInput.addEventListener('input', () => store.set('task', this.taskInput.value));
+        const mark = () => this.tasksContainer.classList.toggle('has-task', !!this.taskInput.value.trim());
+        mark();
+        this.taskInput.addEventListener('input', () => { store.set('task', this.taskInput.value); mark(); });
         this.taskInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === 'Escape') this.taskInput.blur(); });
         document.addEventListener('visibilitychange', () => { if (this.isRunning) { this.tick(); this.holdAwake(); } });
         document.addEventListener('keydown', (e) => this.onKey(e));
+    }
+
+    applyTheme() {
+        document.documentElement.dataset.theme = this.theme;
+        this.txt(this.btnTheme, `Theme: ${THEMES[this.theme]}`);
     }
 
     holdToRepeat(btn, dir) { // click once, or hold to keep stepping
