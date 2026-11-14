@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenFlow - Focus & Breathe</title>
+    <meta name="theme-color" content="#111827">
+    <meta name="color-scheme" content="dark">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%238bc7b0' stroke-width='4'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>ZenFlow</h1>
+            <p>Find your rhythm</p>
+            <button id="btn-sound" class="link-btn" type="button">Sound: on</button>
+        </header>
+
+        <main>
+            <div class="timer-container glass-panel">
+                <div class="mode-selector" role="group" aria-label="Mode">
+                    <button id="btn-focus" class="mode-btn active" type="button" aria-pressed="true" title="Focus (F)">Focus</button>
+                    <button id="btn-breathe" class="mode-btn" type="button" aria-pressed="false" title="Breathe (B)">Breathe</button>
+                </div>
+
+                <div class="timer-display">
+                    <svg class="progress-ring" viewBox="0 0 300 300" aria-hidden="true">
+                        <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="140" cx="150" cy="150"/>
+                        <circle class="progress-ring__circle" stroke-width="8" fill="transparent" r="140" cx="150" cy="150"/>
+                    </svg>
+                    <div class="orb" aria-hidden="true"></div>
+                    <div class="time-text" id="time-display" role="timer">25:00</div>
+                    <div class="breathe-instruction"><span id="breathe-text" aria-live="polite">Ready?</span><small id="breathe-count" aria-hidden="true"></small></div>
+                </div>
+
+                <div class="duration-controls" aria-label="Session length">
+                    <button id="btn-decrease" class="duration-btn" type="button" aria-label="Decrease focus time">−</button>
+                    <span><strong id="duration-display">25 min</strong> <span id="duration-label">focus</span></span>
+                    <button id="btn-increase" class="duration-btn" type="button" aria-label="Increase focus time">+</button>
+                </div>
+
+                <label class="pattern"><span>Pattern</span>
+                    <select id="pattern">
+                        <option value="box">Box 4-4-4-4</option>
+                        <option value="relax">Relax 4-7-8</option>
+                        <option value="calm">Calm 5-5</option>
+                    </select>
+                </label>
+
+                <div class="controls">
+                    <button id="btn-start" class="control-btn primary" type="button">Start</button>
+                    <button id="btn-reset" class="control-btn secondary" type="button">Reset</button>
+                </div>
+                <p id="status" class="status" role="status"></p>
+                <p class="hint">Space start/pause · R reset · F focus · B breathe</p>
+            </div>
+
+            <div class="tasks-container glass-panel">
+                <div class="task-heading">
+                    <span class="task-dot" aria-hidden="true"></span>
+                    <h2>Focus task</h2>
+                    <span class="task-count" title="Sessions and focused time today">Today: <strong id="session-count">0</strong></span>
+                </div>
+                <input type="text" id="task-input" placeholder="What are you working on?" maxlength="80" autocomplete="off" enterkeyhint="done" aria-label="Current focus task">
+                <p class="task-hint">Add one clear task to keep your attention here.</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
